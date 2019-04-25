@@ -4,7 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class ModelTest {
@@ -16,7 +19,7 @@ public class ModelTest {
     int numberOfSportCars;
     int numberOfSedans;
     int numberOfHatchbacks;
-    ArrayList<CarInStock> autoparkCarsTestArray;
+    List<CarInStock> autoparkCarsTestArray;
 
     @Before
     public void setUp() throws Exception {
@@ -43,13 +46,14 @@ public class ModelTest {
 
     @Test
     public void getAutoparkCarsSortedArray() {
-        ArrayList<CarInStock> autoparkCarsArray = model.getAutoparkCarsSortedArray(autopark);
+        List<CarInStock> autoparkCarsArray = model.getAutoparkCarsSortedArray(autopark);
         assertEquals(autoparkCarsTestArray, autoparkCarsArray);
     }
 
     @Test
     public void getCarBySpeedLimitRange() {
-        CarInStock testCar = model.getCarBySpeedLimitRange(autopark, "1");
-        assertEquals(hatchback, testCar);
+        List<CarInStock> testCar = model.getCarBySpeedLimitRange(autopark, "1");
+        List<CarInStock> hatchInList = Arrays.asList(hatchback);
+        assertEquals(hatchInList, testCar);
     }
 }

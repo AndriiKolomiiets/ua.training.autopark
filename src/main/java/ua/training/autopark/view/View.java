@@ -5,6 +5,7 @@ import ua.training.autopark.model.CarInStock;
 import ua.training.autopark.model.VehicleInStock;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class displays messages and result information on console.
@@ -18,7 +19,7 @@ public class View {
         System.out.println("\n" + message);
     }
 
-    public void printArray(ArrayList<CarInStock> arrayList) {
+    public void printArray(List<CarInStock> arrayList) {
         for (CarInStock car : arrayList) {
             System.out.println(car);
         }

@@ -2,7 +2,9 @@ package ua.training.autopark.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class contains and proceed all application logic.
@@ -19,6 +21,8 @@ public class Model {
     public static final String HATCHBACK_TYPE = "hatchback";
     public static final String SPORTCAR_TYPE = "sport-car";
     private AutoparkFactory autoparkFactory;
+    private int minSpeedRange;
+    private int maxSpeedRange;
 
     public Model() {
         autoparkFactory = new AutoparkFactory();
@@ -49,7 +53,7 @@ public class Model {
         return sportcarCost + sedanCost + hatchbackCost;
     }
 
-    public ArrayList getAutoparkCarsArray(Autopark autopark) {
+    public List getAutoparkCarsArray(Autopark autopark) {
         ArrayList<CarInStock> autoparkCarsArray = new ArrayList<>();
         autoparkCarsArray.add(autopark.getHatchback());
         autoparkCarsArray.add(autopark.getSedan());
@@ -57,8 +61,8 @@ public class Model {
         return autoparkCarsArray;
     }
 
-    public ArrayList getAutoparkCarsSortedArray(Autopark autopark) {
-        ArrayList autoparkCarsSortedArray = new ArrayList(getAutoparkCarsArray(autopark));
+    public List getAutoparkCarsSortedArray(Autopark autopark) {
+        List<CarInStock> autoparkCarsSortedArray = new ArrayList(getAutoparkCarsArray(autopark));
         autoparkCarsSortedArray.sort(Comparator.comparingDouble(CarInStock::getFuelRate).reversed());
         return autoparkCarsSortedArray;
     }
@@ -66,32 +70,29 @@ public class Model {
     /**
      * This method is modified to simplify user input and to make it minimal.
      */
-    public CarInStock getCarBySpeedLimitRange(Autopark autopark, String speedRangeInput) {
+    public List<CarInStock> getCarBySpeedLimitRange(Autopark autopark, String speedRangeInput) {
 
         int speedRange = Integer.parseInt(speedRangeInput);
-        Optional<CarInStock> matchingCar;
-        ArrayList<CarInStock> autoparkCarsArray = getAutoparkCarsArray(autopark);
+        List<CarInStock> autoparkCarsArray = getAutoparkCarsArray(autopark);
 
-        switch (speedRange) {
-            case (1):
-                matchingCar = autoparkCarsArray.stream().
-                        filter(car -> car.getSpeedLimit() <= 180).
-                        findFirst();
-                return matchingCar.get();
-            case (2):
-                matchingCar = autoparkCarsArray.stream().
-                        filter(car -> car.getSpeedLimit() > 180).
-                        filter(car -> car.getSpeedLimit() < 200).
-                        findFirst();
-                return matchingCar.get();
-            case (3):
-                matchingCar = autoparkCarsArray.stream().
-                        filter(car -> car.getSpeedLimit() >= 200).
-                        findFirst();
-                return matchingCar.get();
-            default:
-                throw new IllegalArgumentException();
+            switch (speedRange) {
+                case (1):
+                    minSpeedRange = 0;
+                    maxSpeedRange = 180;
+                    break;
+                case 2:
+                    minSpeedRange = 180;
+                    maxSpeedRange = 200;
+                    break;
+                case (3):
+                    minSpeedRange = 200;
+                    maxSpeedRange = 400;
+                    break;
+            }
 
-        }
-    }
+        return autoparkCarsArray.stream().
+                filter(car -> car.getSpeedLimit() >= minSpeedRange).
+                filter(car->car.getSpeedLimit()<maxSpeedRange).
+                collect(Collectors.toList());
+}
 }
